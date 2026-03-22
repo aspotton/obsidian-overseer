@@ -22,23 +22,34 @@ The goal is to avoid one large monolithic prompt and instead load only the guida
 ## Repository structure
 
 ```text
-agents/
-  obsidian.md
-
-commands/
-  obsidian-ingest.md
-
-skills/
-  SKILL.md
-  references/
-    integrity-sweep.md
-    para-routing.md
-    people-style-profile.md
-    read-workflow.md
-    task-conventions.md
-    transcript-ingestion.md
-    write-routing.md
+.
+├── AGENTS.md                 # Root project overview (hierarchical knowledge base)
+├── README.md                 # This file
+├── agents/
+│   └── obsidian.md           # Thin Obsidian agent wrapper
+├── commands/
+│   └── obsidian-ingest.md    # Transcript ingestion command
+└── skills/
+    ├── AGENTS.md             # Skills directory coordination
+    └── obsidian/
+        ├── AGENTS.md         # Core Obsidian skill logic
+        ├── SKILL.md          # Main router for vault operations
+        └── references/
+            ├── AGENTS.md     # Reference-level guidance
+            ├── integrity-sweep.md
+            ├── para-routing.md
+            ├── people-style-profile.md
+            ├── read-workflow.md
+            ├── task-conventions.md
+            ├── transcript-ingestion.md
+            └── write-routing.md
 ```
+
+The `AGENTS.md` files form a hierarchical knowledge base:
+- `./AGENTS.md`: Root project overview
+- `skills/AGENTS.md`: Skill-level coordination
+- `skills/obsidian/AGENTS.md`: Obsidian-specific skill logic
+- `skills/obsidian/references/AGENTS.md`: Reference-level guidance
 
 ## Design
 
