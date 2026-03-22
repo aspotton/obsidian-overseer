@@ -207,20 +207,25 @@ Run:
 
 This is the explicit entrypoint for processing transcripts from the vault intake area.
 
-## Recommended companion skill
+## Recommended companion skills
 
-This repo is designed to work especially well with an `obsidian-markdown` skill.
+This repo works best with these optional companion skills installed:
 
-When available, `write-routing.md` should direct note-writing and note-editing tasks to that skill so markdown formatting rules are not duplicated here.
+### 1. `obsidian-markdown` skill
+**Purpose**: Specialized markdown formatting for Obsidian notes (wikilinks, embeds, callouts, properties).
 
-This keeps `obsidian-overseer` focused on:
-- vault behavior
-- routing
-- note placement
-- integrity
-- transcript handling
+**Installation**: https://github.com/kepano/obsidian-skills/tree/main/skills/obsidian-markdown
 
-and leaves markdown authoring behavior to the specialist skill.
+**Benefit**: When available, `write-routing.md` directs note-writing and note-editing tasks to this skill so markdown formatting rules are not duplicated here. This keeps `obsidian-overseer` focused on vault behavior, routing, note placement, integrity, and transcript handling, while leaving markdown authoring to the specialist skill.
+
+### 2. `humanizer` skill
+**Purpose**: Remove AI-writing patterns from text to make it sound more natural and human-written.
+
+**Installation**: https://github.com/blader/humanizer
+
+**Benefit**: Used for final user-facing responses to ensure natural-sounding communication that doesn't reveal AI-generated writing patterns.
+
+**Note**: Both skills are optional. The core functionality works fine without them, but installing these skills significantly improves the quality of output.
 
 ## Philosophy
 
