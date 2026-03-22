@@ -47,8 +47,9 @@ The goal is to avoid one large monolithic prompt and instead load only the guida
         ├── AGENTS.md         # Core Obsidian skill logic
         ├── SKILL.md          # Main router for vault operations
         └── references/
-            ├── AGENTS.md     # Reference-level guidance
+            ├── AGENTS.md       # Reference-level guidance
             ├── integrity-sweep.md
+            ├── link-discovery.md
             ├── para-routing.md
             ├── people-style-profile.md
             ├── read-workflow.md
@@ -178,6 +179,14 @@ Task extraction and propagation rules:
 
 Guidance for maintaining evidence-based communication and cognition notes for people in the vault.
 
+### `references/link-discovery.md`
+
+Rules for discovering and suggesting related notes when manually creating new content:
+- search the vault for potentially related notes
+- present 3-5 suggestions with context
+- auto-link only explicit connections (project, person, direct mentions)
+- leave thematic/implicit connections for user to decide
+
 ## Symlink strategy
 
 This repository is intended to be used by symlinking each directory into the appropriate OpenCode global config location.
@@ -260,6 +269,7 @@ This repo favors:
 - minimal duplication
 - idempotent repeated runs
 - conservative handling of ambiguous identities, links, and routing
+- automatic link discovery for manual note creation
 
 ## Notes
 

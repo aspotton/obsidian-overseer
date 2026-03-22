@@ -20,6 +20,7 @@ Modular OpenCode setup for Obsidian vault integration. Uses thin agent, skill-ba
         └── references/
             ├── AGENTS.md (target)
             ├── integrity-sweep.md
+            ├── link-discovery.md
             ├── para-routing.md
             ├── people-style-profile.md
             ├── read-workflow.md
@@ -36,6 +37,7 @@ Modular OpenCode setup for Obsidian vault integration. Uses thin agent, skill-ba
 | `skills/obsidian/SKILL.md` | Main router for vault operations. |
 | `references/read-workflow.md` | Grounded reading discipline. |
 | `references/write-routing.md` | Note creation/editing rules. |
+| `references/link-discovery.md` | Link discovery for manual note creation. |
 | `references/para-routing.md` | PARA placement rules. |
 | `references/integrity-sweep.md` | Post-change safety checks. |
 | `references/transcript-ingestion.md` | Transcript processing logic. |
@@ -48,6 +50,7 @@ Modular OpenCode setup for Obsidian vault integration. Uses thin agent, skill-ba
 - **Minimal Changes**: Patch smallest relevant sections.
 - **PARA Routing**: Use Projects, Areas, Resources, Archive, Inbox, Dashboards.
 - **Integrity Sweep**: Repair links and check for duplicates after edits.
+- **Link Discovery**: Suggest related notes when creating new content manually.
 - **Idempotency**: Ensure repeated runs produce same result.
 - **Link Safety**: Prefer alias-first renaming to preserve inbound links.
 
