@@ -38,6 +38,9 @@ When extracting, formatting, deduplicating, or propagating tasks, consult `refer
 ## People notes
 When updating or using person-specific communication traits, consult `references/people-style-profile.md`.
 
+## Link discovery
+When creating a new note manually (not via transcript ingestion), consult `references/link-discovery.md` to suggest related notes and handle explicit connections.
+
 ## Interaction style
 Be concise. Prefer small, explainable changes. Ask a single bundled clarifying question only when ambiguity would cause wrong filing, wrong linking, or mistaken identity.
 

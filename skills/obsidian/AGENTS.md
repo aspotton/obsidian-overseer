@@ -43,6 +43,12 @@ Core control plane for Obsidian vault operations. Manages routing to specialized
 - **Archiving**: Move processed files to archive after successful ingestion.
 - **Reference**: [[references/transcript-ingestion.md]]
 
+## LINK DISCOVERY
+- **New Note Suggestions**: Suggest 3-5 related notes when creating manually
+- **Explicit Only**: Auto-link only explicit connections (project, person, direct mentions)
+- **Conservative**: Suggest thematic links, let user decide
+- **Reference**: [[references/link-discovery.md]]
+
 ## REFERENCES
 - [[SKILL.md]]: Main skill router.
 - [[references/read-workflow.md]]: Grounded reading discipline.
