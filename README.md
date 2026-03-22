@@ -4,6 +4,18 @@ A modular OpenCode setup for working with an Obsidian vault using a thin agent, 
 
 This repository is designed so each top-level folder can be symlinked into the appropriate global OpenCode config location.
 
+## Why this exists
+
+Most of us are drowning in information but starving for wisdom. We capture bookmarks, save snippets, and record meetings, but that data usually just sits in a digital graveyard. Tiago Forte's "Second Brain" methodology offers a way out. This system relies on the CODE framework: Capture what resonates, Organize for actionability, Distill the essence, and Express your ideas. By offloading the burden of remembering everything to a structured system, you free up your biological brain for what it does best: thinking and creating. This is cognitive offloading in practice. Over time, your vault starts to gain cumulative value as old ideas connect with new ones in ways you didn't expect.
+
+In this system, organization isn't about filing things away by topic. Instead, we use the PARA method: Projects, Areas, Resources, and Archives. This shifts the focus from "where does this belong?" to "when will I use this?" Projects are active efforts with deadlines. Areas cover ongoing responsibilities, while Resources house topics of interest for future use. Archives hold everything else. This structure ensures that the most relevant information is always at your fingertips when you're actually working. It turns a static library into a dynamic workspace.
+
+For developers, a Second Brain is a significant advantage. This is where you keep your debugging journals. You don't just record the fix; you document the "why" behind it so you don't have to solve the same problem twice. Your personal code cookbook lives here too, filled with reusable patterns and snippets that you've actually tested. This also serves as a decision log for architectural choices that seemed obvious at the time but need context six months later. Most importantly, it makes context switching between projects less painful. When you can pull up a project dashboard that links to every relevant meeting, decision, and task, you're back in the flow in minutes instead of hours. Your vault becomes the perfect context for AI-augmented development. When your AI assistant can "read" your notes, it understands your specific patterns and constraints.
+
+The specific problem this repository solves is the "transcript trap." We record meetings and generate high-fidelity transcripts using tools like Whisper, but those transcripts are often too noisy to be useful. They're ephemeral. Obsidian Overseer automates the process of turning that raw noise into searchable knowledge. It pulls transcripts into your vault and performs surgical filtering to remove the fluff. The system extracts structured summaries, key decisions, action items, and open questions. By using bidirectional links, it connects these insights to the right projects and people automatically. This turns a one-hour meeting into a five-minute read that actually helps you get things done.
+
+This setup bridges the gap between your Obsidian vault and your AI assistants via OpenCode. The repository provides a modular, skill-based control plane that understands how to navigate and update your Second Brain without making a mess. We use a thin agent approach to keep things fast and predictable. Storing notes is only the beginning. Our goal is to make your knowledge actionable so you can spend less time searching and more time building.
+
 ## What this repo contains
 
 `obsidian-overseer` separates Obsidian behavior into three parts:
