@@ -5,8 +5,10 @@ Use this workflow for vault-grounded questions and for any task that needs note 
 ## Build a read plan first
 Before reading notes beyond a quick directory listing, create a Read Plan.
 
+- Think about additional searches or related context that may be useful to enhance the read request.
 - Search first using listing, globbing, or grep-like discovery.
-- Choose the smallest useful set of notes, usually 3 to 10.
+- Prefer to use the newest files and information and go back from there as needed. Newer information carries more weight than older when it comes to tasks and happenings that are fluid.
+- Choose the smallest useful set of notes, usually 5 to 10. This is a guideline as it is more important to have good context as it makes the answer better.
 - For each planned note, include:
   - path
   - why it matters

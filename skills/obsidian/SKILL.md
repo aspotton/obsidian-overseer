@@ -16,7 +16,7 @@ Treat the vault as the source of truth whenever the task depends on vault conten
 - Prefer conservative, reversible changes.
 
 ## Read discipline
-Before reading notes beyond a quick listing or search, consult `references/read-workflow.md`.
+Before reading notes beyond a quick listing or search, consult `references/read-workflow.md`, it is more important to have good context as it makes the answer better.
 
 ## Write discipline
 Before creating, editing, moving, or renaming notes, consult `references/write-routing.md`.
@@ -30,7 +30,29 @@ After any create, edit, move, or rename, consult `references/integrity-sweep.md`
 ## Transcript ingestion
 When the user asks to ingest transcripts, check for new transcripts, or process transcript files into the vault, use the `/obsidian-ingest` command rather than reproducing the ingestion procedure inline.
 
+The `/obsidian-ingest` command dispatches to the ingest orchestrator, which manages parallel processing:
+
+1. **Discovery Phase**: Scan intake folders (`Inbox/Transcripts/` or `Inbox/Transcriptions/`) for unprocessed transcripts
+2. **Read Phase**: Dispatch parallel Read Subagents (max 5 concurrent) to analyze transcripts
+3. **Write Phase**: Dispatch parallel Write Subagents (max 5 concurrent) to create/update notes
+4. **Integrity Phase**: Run integrity sweeps on processed groups
+5. **Archive Phase**: Move processed transcripts to `Archive/Transcripts/`
+6. **Reporting**: Generate summary of successes, failures, and pending items
+
+**Parallel Processing Rules:**
+- Safe to parallelize: Reading different transcripts, writing to independent notes, integrity checks on separate groups
+- Cannot parallelize: Multiple writes to the same file, writes with dependencies
+- Concurrency limit: 5 subagents per operation type
+- Timeout: 60s for reads, 90s for writes, 30s for integrity
+
+**Error Handling:**
+- Single subagent failures: Log error, continue with remaining operations
+- Never rollback successful writes
+- Report partial success with details for manual review
+
 If transcript-specific interpretation or post-ingest note updates are needed, consult `references/transcript-ingestion.md`.
+
+For orchestration details and synchronization points, consult `references/ingest-orchestration.md`.
 
 ## Tasks
 When extracting, formatting, deduplicating, or propagating tasks, consult `references/task-conventions.md`.

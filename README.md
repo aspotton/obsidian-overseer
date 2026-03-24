@@ -18,36 +18,67 @@ This setup bridges the gap between your Obsidian vault and your AI assistants vi
 
 ## What this repo contains
 
-`obsidian-overseer` separates Obsidian behavior into three parts:
+`obsidian-overseer` separates Obsidian behavior into a **parallel subagent architecture** that optimizes performance for three distinct usage patterns:
+
+### Agents
 
 - `agents/obsidian.md`
-  A thin Obsidian-focused agent that delegates most behavior to the skill.
+  A thin Obsidian-focused agent that delegates to the skill router.
+
+- `agents/obsidian-read.md`
+  Specialized agent for transcript analysis and extraction (speakers, topics, decisions, action items).
+
+- `agents/obsidian-write.md`
+  Specialized agent for note creation and updates with PARA-aware routing.
+
+- `agents/obsidian-ingest-orchestrator.md`
+  Central coordinator for parallel transcript processing with 6-phase workflow.
+
+### Commands
 
 - `commands/obsidian-ingest.md`
-  A slash command for transcript ingestion into the current vault.
+  A slash command for parallel transcript ingestion into the current vault.
 
-- `skills/`
-  A compact Obsidian skill with reference files for read workflow, write routing, PARA routing, transcript ingestion, integrity checks, task handling, and people-note style profiling.
+### Skills
 
-The goal is to avoid one large monolithic prompt and instead load only the guidance needed for the current operation.
+- `skills/obsidian/SKILL.md`
+  Main router that dispatches tasks to appropriate agents and subagents.
+
+- `skills/obsidian/references/`
+  Reference files for specific operations:
+  - `read-workflow.md` - Grounded reading discipline
+  - `write-routing.md` - Note creation and editing rules
+  - `para-routing.md` - Note placement (Projects, Areas, Resources, Archives)
+  - `integrity-sweep.md` - Post-write safety checks
+  - `transcript-ingestion.md` - Transcript processing rules
+  - `task-conventions.md` - Task extraction and formatting
+  - `people-style-profile.md` - Communication style profiling
+  - `link-discovery.md` - Related note suggestions
+  - `ingest-orchestration.md` - Parallel processing rules
+
+The goal is to avoid one large monolithic prompt and instead load only the guidance needed for the current operation, with **parallel processing** for transcript ingestion.
 
 ## Repository structure
 
 ```text
 .
-├── AGENTS.md                 # Root project overview (hierarchical knowledge base)
+├── AGENTS.md                 # Root project overview with architecture details
 ├── README.md                 # This file
 ├── agents/
-│   └── obsidian.md           # Thin Obsidian agent wrapper
+│   ├── obsidian.md           # Thin Obsidian agent wrapper
+│   ├── obsidian-read.md      # Specialized transcript analysis agent
+│   ├── obsidian-write.md     # Specialized note creation/update agent
+│   └── obsidian-ingest-orchestrator.md # Parallel processing coordinator
 ├── commands/
 │   └── obsidian-ingest.md    # Transcript ingestion command
 └── skills/
     ├── AGENTS.md             # Skills directory coordination
     └── obsidian/
         ├── AGENTS.md         # Core Obsidian skill logic
-        ├── SKILL.md          # Main router for vault operations
+        ├── SKILL.md          # Main router with subagent dispatch
         └── references/
             ├── AGENTS.md       # Reference-level guidance
+            ├── ingest-orchestration.md  # Parallel processing rules
             ├── integrity-sweep.md
             ├── link-discovery.md
             ├── para-routing.md
@@ -64,66 +95,147 @@ The `AGENTS.md` files form a hierarchical knowledge base:
 - `skills/obsidian/AGENTS.md`: Obsidian-specific skill logic
 - `skills/obsidian/references/AGENTS.md`: Reference-level guidance
 
-## Design
+## Architecture
 
-This repo uses a controller-style approach:
+This repo uses a **parallel subagent architecture** that optimizes performance for three distinct usage patterns:
 
-- The agent is intentionally minimal.
-- The skill acts as the main Obsidian control plane.
-- The reference files hold operation-specific guidance.
-- The command provides an explicit entrypoint for transcript ingestion.
+### Three Usage Patterns
 
-### Why this layout exists
+| Pattern | Use Case | Subagent Overhead | Performance |
+|---------|----------|-------------------|-------------|
+| **General Queries** | "What happened in Project Atlas?" | None (fast path) | ~2-3 seconds |
+| **Note Editing** | "Update the Atlas project note" | Optional (complex edits only) | ~3-10 seconds |
+| **Transcript Ingestion** | `/obsidian-ingest` | Full orchestration (parallel) | 60-70% faster for 5+ transcripts |
 
-This structure is meant to reduce context usage and improve maintainability.
+### Architecture Diagram
 
-Instead of keeping all Obsidian behavior in a single agent file, responsibilities are split by operation:
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         USER INTERACTION LAYER                          │
+└─────────────────────────────────────────────────────────────────────────┘
+                                     │
+                                     ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                      THIN AGENT (agents/obsidian.md)                    │
+│                    - Minimal wrapper (23 lines)                         │
+│                    - Delegates to skill                                 │
+│                    - No logic duplication                               │
+└─────────────────────────────────────────────────────────────────────────┘
+                                     │
+                                     ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                    SKILL ROUTER (skills/obsidian/SKILL.md)             │
+│                    ┌────────────────────────────────────┐               │
+│                    │  Task Type Analysis                │               │
+│                    └────────────────────────────────────┘               │
+│                            │         │         │                       │
+│            ┌───────────────┘         │         └───────────────┐       │
+│            ▼                         ▼                         ▼       │
+│    ┌───────────────┐         ┌───────────────┐         ┌───────────────┐│
+│    │  General      │         │  Note         │         │  Transcript   ││
+│    │  Query        │         │  Editing      │         │  Ingestion    ││
+│    │  (Fast Path)  │         │  (Optional)   │         │  (Orchestrated)││
+│    └───────────────┘         └───────────────┘         └───────────────┘│
+└─────────────────────────────────────────────────────────────────────────┘
+                                     │
+                     ┌───────────────┼───────────────┐
+                     ▼               ▼               ▼
+         ┌─────────────────┐ ┌─────────────┐ ┌───────────────────────┐
+         │  Read Workflow  │ │ Write Route │ │ Ingest Orchestrator   │
+         │  (Direct)       │ │ (Direct or  │ │ (Subagent Parallel)   │
+         │                 │ │  Subagent)  │ │                       │
+         └─────────────────┘ └─────────────┘ └───────────────────────┘
+```
 
-- read/query behavior
-- write/edit behavior
-- PARA routing
-- transcript ingestion guidance
-- link and reference integrity checks
-- task conventions
-- people note style profiling
+### Subagent Roles
 
-This lets OpenCode load only the relevant guidance for a given task.
+| Subagent | File | Role | Responsibilities |
+|----------|------|------|------------------|
+| **Read Subagent** | `agents/obsidian-read.md` | Transcript analysis specialist | Extract speakers, topics, decisions, action items, open questions from transcripts |
+| **Write Subagent** | `agents/obsidian-write.md` | Note creation/update specialist | Create/update meeting notes, person notes, project notes, area notes with proper PARA routing |
+| **Orchestrator** | `agents/obsidian-ingest-orchestrator.md` | Central coordinator | Manage 6-phase ingestion workflow, dispatch parallel subagents, run integrity sweeps |
+
+### Performance
+
+#### Performance Comparison
+
+| Use Case | Current | New Architecture | Improvement |
+|----------|---------|------------------|-------------|
+| General queries | Fast | Fast (unchanged) | 0% |
+| Simple edits | Moderate | Moderate | 0% |
+| Complex edits | Moderate | Faster | +20-30% |
+| Ingestion (1 transcript) | Slow | Moderate | +30-40% |
+| Ingestion (5+ transcripts) | Very slow | Fast | **+60-70%** |
+
+#### Expected Processing Times
+
+| Batch Size | Expected Time | Notes |
+|------------|---------------|-------|
+| 1 transcript | 30-40s | Single subagent path |
+| 5 transcripts | 45-60s | Full parallelization |
+| 10 transcripts | 60-90s | Two batches of 5 |
+| 20 transcripts | 2-3 min | Four batches of 5 |
+
+#### 6-Phase Ingestion Workflow
+
+1. **Discovery & Planning** - Scan intake folders, build ingestion plan
+2. **Parallel Read Dispatch** - Dispatch Read Subagents (max 5 concurrent)
+3. **Parallel Write Dispatch** - Dispatch Write Subagents (max 5 concurrent)
+4. **Integrity Sweep** - Run integrity checks on processed notes
+5. **Archive Source Transcripts** - Move processed transcripts to archive
+6. **Final Reporting** - Generate comprehensive ingestion report
 
 ## How it works
 
-### Agent
+### General Queries (Fast Path)
 
-`agents/obsidian.md` is a thin vault specialist.
+When you ask a question like "What happened in Project Atlas?", the system:
+1. Routes directly to `read-workflow.md`
+2. Searches the vault for relevant notes
+3. Reads incrementally and answers from what was actually reviewed
+4. **No subagent overhead** - completes in ~2-3 seconds
 
-It should:
-- treat the vault as the source of truth
-- rely on the Obsidian skill for detailed operating rules
-- stay conservative about edits
-- avoid duplicating workflow details inline
+### Note Editing (Optional Optimization)
 
-### Command
+For note updates like "Update the Atlas project note with the rollout timeline":
+1. Routes to `write-routing.md`
+2. **Simple edits**: Direct processing (no subagent)
+3. **Complex edits**: Optional Write Subagent for multi-file operations
+4. Runs integrity sweep after changes
 
-`commands/obsidian-ingest.md` defines `/obsidian-ingest`.
+### Transcript Ingestion (Parallel Processing)
 
-Use it when you want to:
-- check for new transcripts
-- process transcript files into the vault
-- archive processed transcripts after ingestion
+When you run `/obsidian-ingest`:
 
-### Skill
+1. **Discovery Phase**: Scan `Inbox/Transcripts/` or `Inbox/Transcriptions/` for unprocessed transcripts
+2. **Read Phase**: Dispatch parallel Read Subagents (max 5 concurrent) to analyze transcripts
+3. **Write Phase**: Dispatch parallel Write Subagents (max 5 concurrent) to create/update notes
+4. **Integrity Phase**: Run integrity sweeps on processed groups
+5. **Archive Phase**: Move processed transcripts to `Archive/Transcripts/`
+6. **Reporting**: Generate summary of successes, failures, and pending items
 
-`skills/SKILL.md` is the main router.
+**Parallel Processing Rules:**
+- Safe to parallelize: Reading different transcripts, writing to independent notes, integrity checks on separate groups
+- Cannot parallelize: Multiple writes to the same file, writes with dependencies
+- Concurrency limit: 5 subagents per operation type
+- Timeout: 60s for reads, 90s for writes, 30s for integrity
 
-It decides whether the current task is primarily:
-- reading/querying the vault
-- writing or editing notes
-- organizing notes with PARA rules
-- running transcript-ingestion-related logic
-- performing post-edit integrity work
-
-It then points to the relevant reference file.
+**Error Handling:**
+- Single subagent failures: Log error, continue with remaining operations
+- Never rollback successful writes
+- Report partial success with details for manual review
 
 ## Reference files
+
+### `references/ingest-orchestration.md`
+
+**NEW**: Parallel processing rules for transcript ingestion:
+- Orchestrator responsibilities and 6-phase workflow
+- Parallel processing rules (when to parallelize, concurrency limits)
+- Synchronization points and barriers between phases
+- Error handling and rollback procedures (never rollback successful writes)
+- File conflict prevention strategies
+- Performance expectations and batching strategies
 
 ### `references/read-workflow.md`
 

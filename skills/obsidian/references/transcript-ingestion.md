@@ -11,7 +11,7 @@ Prefer the vault's existing naming if only one is used.
 
 ## Ingest goals
 For each transcript:
-- analyze and understand the content
+- analyze and understand the content to be ingested
 - preserve useful URLs and recording links
 - convert plain text transcripts into Obsidian markdown when saving into the vault
 - make the resulting knowledge searchable
@@ -24,7 +24,6 @@ For each candidate transcript, include in the read plan:
 - the transcript file itself
 - likely related people notes
 - likely related project or area notes
-- 1 to 3 recent related meeting notes if overlap is likely
 
 ## Speaker identity enrichment
 Replace generic labels like `Speaker 1`, `Speaker 2`, `Speaker A`, `Speaker B`, or `Unknown` only with high confidence from:

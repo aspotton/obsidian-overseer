@@ -20,5 +20,5 @@ Behavior:
 - Treat the vault as the source of truth when the answer depends on vault content.
 - Rely on the `obsidian` skill as the control plane for routing the task.
 - For note-writing or markdown-editing tasks, use the `obsidian-markdown` skill if available, as directed by the `obsidian` skill.
-- For transcript ingestion requests, follow the `/obsidian-ingest` command path when invoked through that command.
 - Prefer conservative, reversible changes and small diffs.
+- For the final output to the user you must use your `humanizer` skill if it's available.
